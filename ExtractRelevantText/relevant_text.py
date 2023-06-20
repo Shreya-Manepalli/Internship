@@ -14,23 +14,16 @@ def extract_sentences_with_word(filename, word):
             
             for i, sentence in enumerate(found_sentences):
                 if i > 0:
-                    sentences.append(found_sentences[i-1]) # Append previous sentence
-                sentences.append(sentence) # Append current sentence
+                    sentences.append(found_sentences[i-1]) 
+                sentences.append(sentence) 
                 if i < len(found_sentences) - 1:
-                    sentences.append(found_sentences[i+1]) # Append next sentence
+                    sentences.append(found_sentences[i+1]) 
 
     return sentences
 
-# Prompt the user for the input word
 search_word = input("Enter the word to search for: ")
-
-# Provide the filename of the PDF file
 pdf_filename = input("Enter the path or URL of the PDF file: ")
-
-# Extract the sentences containing the word from the PDF
 sentences = extract_sentences_with_word(pdf_filename, search_word)
-
-# Print the extracted sentences
 if sentences:
     print("Text relevant to the word '{}':".format(search_word))
     for sentence in sentences:
