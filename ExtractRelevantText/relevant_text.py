@@ -10,7 +10,14 @@ def extract_sentences_with_word(filename, word):
         for page_num in range(num_pages):
             page = reader.pages[page_num]
             text = page.extract_text()
-            sentences += re.findall(r"[^.!?]*{}[^.!?]*[.!?]".format(word), text)
+            found_sentences = re.findall(r"([^.!?]*{}[^.!?]*[.!?])".format(word), text)
+            
+            for i, sentence in enumerate(found_sentences):
+                if i > 0:
+                    sentences.append(found_sentences[i-1]) # Append previous sentence
+                sentences.append(sentence) # Append current sentence
+                if i < len(found_sentences) - 1:
+                    sentences.append(found_sentences[i+1]) # Append next sentence
 
     return sentences
 
@@ -25,8 +32,8 @@ sentences = extract_sentences_with_word(pdf_filename, search_word)
 
 # Print the extracted sentences
 if sentences:
-    print("Sentences containing '{}':".format(search_word))
+    print("Text relevant to the word '{}':".format(search_word))
     for sentence in sentences:
         print(sentence)
 else:
-    print("No sentences found containing '{}'.".format(search_word))
+    print("No text found relevant to '{}'. Please try another word".format(search_word))
