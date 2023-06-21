@@ -1,7 +1,6 @@
 import locale
 import PySimpleGUI as sg
-import docx  
-#import openpyxl  
+import docx 
 from openpyxl import Workbook  
 from openpyxl.styles import Font  
 from openpyxl.styles.borders import Border, Side 
@@ -16,7 +15,11 @@ import re
 ##################################################################
 
 
-def extract_sentences_with_word(filename, word):
+import PyPDF2
+import docx2txt
+import re
+
+def extract_sentences_with_word_from_pdf(filename, word):
     sentences = []
     with open(filename, "rb") as file:
         reader = PyPDF2.PdfReader(file)
@@ -25,26 +28,56 @@ def extract_sentences_with_word(filename, word):
         for page_num in range(num_pages):
             page = reader.pages[page_num]
             text = page.extract_text()
-            sentences += re.findall(r"[^.!?]*{}[^.!?]*[.!?]".format(word), text)
+            found_sentences = re.findall(r"([^.!?]*{}[^.!?]*[.!?])".format(word), text)
+            
+            for i, sentence in enumerate(found_sentences):
+                if i > 0:
+                    sentences.append(found_sentences[i-1]) 
+                sentences.append(sentence) 
+                if i < len(found_sentences) - 1:
+                    sentences.append(found_sentences[i+1]) 
+
+    return sentences
+
+def extract_sentences_with_word_from_docx(filename, word):
+    sentences = []
+    text = docx2txt.process(filename)
+    found_sentences = re.findall(r"([^.!?]*{}[^.!?]*[.!?])".format(word), text)
+    
+    for i, sentence in enumerate(found_sentences):
+        if i > 0:
+            sentences.append(found_sentences[i-1]) 
+        sentences.append(sentence) 
+        if i < len(found_sentences) - 1:
+            sentences.append(found_sentences[i+1]) 
 
     return sentences
 
 search_word = input("Enter the word to search for: ")
+file_path = input("Enter the path of the file (PDF or DOCX): ")
+sentences = []
 
-pdf_filename = input("Enter the path or URL of the PDF file: ")
-
-sentences = extract_sentences_with_word(pdf_filename, search_word)
+if file_path.lower().endswith('.pdf'):
+    sentences = extract_sentences_with_word_from_pdf(file_path, search_word)
+elif file_path.lower().endswith('.docx'):
+    sentences = extract_sentences_with_word_from_docx(file_path, search_word)
+else:
+    print("Unsupported file format.")
 
 if sentences:
-    print("Sentences containing '{}':".format(search_word))
+    print("Text relevant to the word '{}':".format(search_word))
     for sentence in sentences:
         print(sentence)
 else:
-    print("No sentences found containing '{}'.".format(search_word))
+    print("No text found relevant to the word '{}'. Please try another word".format(search_word))
 
 
 ##################################################################
 
+
+import PyPDF2
+import docx2txt
+import re
 
 def extract_equations_from_pdf(pdf_path):
     equations = []
@@ -61,9 +94,28 @@ def extract_equations_from_pdf(pdf_path):
             equations.extend(matches)
     
     return equations
-pdf_file_path = input("Enter the path or URL of the PDF file: ")
-equations = extract_equations_from_pdf(pdf_file_path)
-print("The equations in the following document are:")
+
+def extract_equations_from_docx(docx_path):
+    equations = []
+
+    text = docx2txt.process(docx_path)
+    equation_pattern = r'[^\n=]+=[^\n]+'
+    matches = re.findall(equation_pattern, text)
+    equations.extend(matches)
+    
+    return equations
+
+file_path = input("Enter the path of the file (PDF or DOCX): ")
+equations = []
+if file_path.lower().endswith('.pdf'):
+    equations = extract_equations_from_pdf(file_path)
+    print("The equations in the PDF document are:")
+elif file_path.lower().endswith('.docx'):
+    equations = extract_equations_from_docx(file_path)
+    print("The equations in the Word document are:")
+else:
+    print("Unsupported file format.")
+
 for equation in equations:
     print(equation)
 
