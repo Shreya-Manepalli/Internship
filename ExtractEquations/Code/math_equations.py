@@ -1,4 +1,5 @@
 import PyPDF2
+import docx2txt
 import re
 
 def extract_equations_from_pdf(pdf_path):
@@ -16,34 +17,27 @@ def extract_equations_from_pdf(pdf_path):
             equations.extend(matches)
     
     return equations
-pdf_file_path = input("Enter the path or URL of the PDF file: ")
-equations = extract_equations_from_pdf(pdf_file_path)
-print("The equations in the following document are:")
+
+def extract_equations_from_docx(docx_path):
+    equations = []
+
+    text = docx2txt.process(docx_path)
+    equation_pattern = r'[^\n=]+=[^\n]+'
+    matches = re.findall(equation_pattern, text)
+    equations.extend(matches)
+    
+    return equations
+
+file_path = input("Enter the path of the file (PDF or DOCX): ")
+equations = []
+if file_path.lower().endswith('.pdf'):
+    equations = extract_equations_from_pdf(file_path)
+    print("The equations in the PDF document are:")
+elif file_path.lower().endswith('.docx'):
+    equations = extract_equations_from_docx(file_path)
+    print("The equations in the Word document are:")
+else:
+    print("Unsupported file format.")
+
 for equation in equations:
     print(equation)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
