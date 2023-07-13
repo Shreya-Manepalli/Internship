@@ -3,6 +3,13 @@ def not_null_input(input_value):
         return "None"
     else:
         return str(input_value)
+# def not_null_input(input_value):
+#     if input_value is None:
+#         return "none"
+#     elif isinstance(input_value, str):
+#         return input_value
+#     else:
+#         return str(input_value)
 
 
 def read_pdf(pdf_path, excel_path):
@@ -69,7 +76,13 @@ def read_pdf(pdf_path, excel_path):
                 data = cell_value
                 # print(data[12:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
-                temp1 = data[12:]
+                temp1 = ""
+
+                if data is None:
+                    temp1 = "None"
+                else:
+                    temp1 = data[12:]
+                
                 table2[currentRow][0] = not_null_input(temp1)
 
                 select = select + 1
@@ -82,7 +95,13 @@ def read_pdf(pdf_path, excel_path):
                 data = cell_value
                 # print(data[11:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
-                temp2 = data[11:]
+                temp2 = ""
+                
+                if data is None:
+                    temp2 = "None"
+                else:
+                    temp2 = data[11:]
+                
                 table2[currentRow][1] = not_null_input(temp2)
 
                 select = select + 1
@@ -98,7 +117,13 @@ def read_pdf(pdf_path, excel_path):
                 data = cell_value
                 # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
-                temp3 = data
+                temp3 = ""
+                
+                if data is None:
+                    temp3 = "None"
+                else:
+                    temp3 = data
+
                 table2[currentRow][2] = not_null_input(temp3)
 
                 select = select + 1
@@ -114,7 +139,13 @@ def read_pdf(pdf_path, excel_path):
                 data = cell_value
                 # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
-                temp4 = data
+                temp4 = ""
+                
+                if data is None:
+                    temp4 = "None"
+                else:
+                    temp4 = data
+
                 table2[currentRow][3] = not_null_input(temp4)
 
                 select = 0
