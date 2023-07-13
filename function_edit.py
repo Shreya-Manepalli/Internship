@@ -1,3 +1,10 @@
+def not_null_input(input_value):
+    if input_value is None:
+        return "None"
+    else:
+        return str(input_value)
+
+
 def read_pdf(pdf_path, excel_path):
     dfs = tabula.read_pdf(pdf_path, pages='all')
     with pd.ExcelWriter(excel_path) as writer:
@@ -41,11 +48,8 @@ def read_pdf(pdf_path, excel_path):
                 row_number = cells_table1[j][0]
                 column_number = cells_table1[j][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
-                data = cell_value
-                if data != None:
-                    table1.append(data)
-                else:
-                    table1.append("None")
+                data = not_null_input(cell_value)
+                table1.append(data)
             # print(table1)
 
         # print("------" + str(sheet) + "------")
@@ -66,12 +70,7 @@ def read_pdf(pdf_path, excel_path):
                 # print(data[12:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
                 temp1 = data[12:]
-
-                if temp1 != None:
-                    table2[currentRow][0] = temp1
-                else:
-                    table2[currentRow][0] = "None" 
-                
+                table2[currentRow][0] = not_null_input(temp1)
 
                 select = select + 1
 
@@ -84,12 +83,7 @@ def read_pdf(pdf_path, excel_path):
                 # print(data[11:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
                 temp2 = data[11:]
-
-                if temp2 != None:
-                    table2[currentRow][0] = temp2
-                else:
-                    table2[currentRow][0] = "None" 
-                
+                table2[currentRow][1] = not_null_input(temp2)
 
                 select = select + 1
                 count = count + 1
@@ -105,12 +99,7 @@ def read_pdf(pdf_path, excel_path):
                 # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
                 temp3 = data
-
-                if temp3 != None:
-                    table2[currentRow][0] = temp3
-                else:
-                    table2[currentRow][0] = "None"
-                
+                table2[currentRow][2] = not_null_input(temp3)
 
                 select = select + 1
                 count = count + 1
@@ -126,11 +115,7 @@ def read_pdf(pdf_path, excel_path):
                 # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
 
                 temp4 = data
-                
-                if temp4 != None:
-                    table2[currentRow][0] = temp4
-                else:
-                    table2[currentRow][0] = "None"
+                table2[currentRow][3] = not_null_input(temp4)
 
                 select = 0
                 count = count + 1
