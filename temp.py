@@ -138,7 +138,8 @@ def read_pdf(pdf_path, excel_path):
     dfs = tabula.read_pdf(pdf_path, pages='all')
     with pd.ExcelWriter(excel_path) as writer:
         for i, df in enumerate(dfs):
-            df.to_excel(writer, sheet_name=f"Sheet{i+1}", index=False)
+            sheet_name = f"Sheet{i+1}"
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
 
     workbook = load_workbook(excel_path)
     sheet_names = workbook.sheetnames
@@ -371,14 +372,6 @@ def table_2_excel(pdf_path, excel_path, output_path):
                 str_item_no = item_no_list[x]
                 write_to_excel(str_item_no, excel_row + start_point, excel_col, output_path, output_sheet_name)
                 item_no = item_no + 1
-
-
-    try:
-        os.remove(excel_path)
-    except FileNotFoundError:
-        print(f"File '{excel_path}' not found.")
-    except PermissionError:
-        print(f"Permission denied to delete file '{excel_path}'.")
                 
 
 
@@ -431,7 +424,7 @@ excel_path = "out4.xlsx"
 output_path = "result.xlsx"
 
 # Type 1 to enter a file and 2 to enter a folder: 
-file_or_folder = 2
+file_or_folder = 1
 
 if file_or_folder == 1:
     pdf_file_2_excel(pdf_path, excel_path, output_path)
