@@ -1,3 +1,24 @@
+#!/usr/bin/env python
+
+
+
+'''
+Description: This code extract all the neccessary values from the Non Conformance Reports and exports it into an excel file. 
+It accepts a folder or a file as an input.It segregates the files in a folder based on the Drwaing number and outputs the information 
+in each file into an excel sheet in the desired format.
+
+'''
+
+
+__author__ = "Shreya Manepalli"
+__version__ = "1.0"
+__email__ = "Shreya.Manepalli@gknaerospace.com"
+
+
+
+############################################################# CODE #############################################################
+
+#IMPORTING LIBRARIES
 import tabula
 import pandas as pd
 from openpyxl import Workbook
@@ -7,6 +28,8 @@ import glob
 import PyPDF2
 import re
 
+
+#Function to extract the measured and deviation values
 def find_numbers(sentences):
     pattern = r"is\s+(.*?)\s+or\s+(\d+\.?\d*)"
     
@@ -30,6 +53,8 @@ def find_numbers(sentences):
         deviation_values.append(deviation_value)
     return [measured_values, deviation_values]
 
+
+#Function to extract the Item Numbers from the pdf file
 def get_item_no(pdf_path):
     rd = PyPDF2.PdfReader(pdf_path)
     item_matches = []
@@ -39,12 +64,16 @@ def get_item_no(pdf_path):
         item_matches.extend(matches)
     return item_matches
 
+
+#Function to check if the sheet name in excel is valid or not
 def valid_sheet(string):
     characters_to_remove = ['*', ',', '.', '?', '/', '\\', ':', '[', ']']
     for char in characters_to_remove:
         string = string.replace(char, '')
     return string
 
+
+#Function to iterate across all the files in the folder
 def folder_list(folder_path):
     files_list = []
 
@@ -60,6 +89,7 @@ def folder_list(folder_path):
     return files_list
 
 
+#Function to append the data of the files in the excel sheet
 def find_last_row(file_path, sheet_name, column_index):
     try:
         workbook = load_workbook(file_path)
@@ -81,7 +111,7 @@ def find_last_row(file_path, sheet_name, column_index):
     return 0  # If no filled rows are found
 
 
-
+#Function to write the extracted values into an excel
 def write_to_excel(string, row_no, col_no, file_path, sheet_name):
     try:
         workbook = load_workbook(file_path)
@@ -96,6 +126,13 @@ def write_to_excel(string, row_no, col_no, file_path, sheet_name):
     sheet.cell(row=row_no, column=col_no).value = string
     workbook.save(file_path)
 
+
+
+def not_null_input(input_value):
+    if input_value is None:
+        return "None"
+    else:
+        return str(input_value)
 
 def read_pdf(pdf_path, excel_path):
     dfs = tabula.read_pdf(pdf_path, pages='all')
@@ -113,7 +150,7 @@ def read_pdf(pdf_path, excel_path):
     total_cells_table1 = len(cells_table1)
 
     # (DefectType, CharNo)4, (SerialNos)5, (Description)6
-    cells_table2 = [[1,3], [1,4], [2,1], [2,1]]
+    cells_table2 = [[2,3], [2,4], [2,1], [2,1]]
     total_cells_table2 = len(cells_table2)
 
     table1 = []
@@ -140,8 +177,11 @@ def read_pdf(pdf_path, excel_path):
                 row_number = cells_table1[j][0]
                 column_number = cells_table1[j][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
-                data = cell_value
+                data = not_null_input(cell_value)
                 table1.append(data)
+            # print(table1)
+
+        # print("------" + str(sheet) + "------")
         
         if i in range(2, total_sheets):
 
@@ -150,46 +190,85 @@ def read_pdf(pdf_path, excel_path):
             
             elif count == 1:
 
+                # print("====DefectType====")
+
                 row_number = cells_table2[select][0]
                 column_number = cells_table2[select][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
                 data = cell_value
-                temp1 = data[18:]
-                table2[currentRow][0] = temp1
+                # print(data[12:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
+
+                temp1 = ""
+
+                if data is None:
+                    temp1 = "None"
+                else:
+                    temp1 = data[12:]
+                
+                table2[currentRow][0] = not_null_input(temp1)
 
                 select = select + 1
 
+                # print("====CharNo====")
 
                 row_number = cells_table2[select][0]
                 column_number = cells_table2[select][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
                 data = cell_value
-                temp2 = data[17:]
-                table2[currentRow][1] = temp2
+                # print(data[11:]) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
+
+                temp2 = ""
+                
+                if data is None:
+                    temp2 = "None"
+                else:
+                    temp2 = data
+                
+                table2[currentRow][1] = not_null_input(temp2)
 
                 select = select + 1
                 count = count + 1
 
             elif count == 2:
 
+                # print("====SerialNos====")
+
                 row_number = cells_table2[select][0]
                 column_number = cells_table2[select][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
                 data = cell_value
-                temp3 = data
-                table2[currentRow][2] = temp3
+                # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
+
+                temp3 = ""
+                
+                if data is None:
+                    temp3 = "None"
+                else:
+                    temp3 = data
+
+                table2[currentRow][2] = not_null_input(temp3)
 
                 select = select + 1
                 count = count + 1
 
             elif count == 3:
+
+                # print("====Description====")
                 
                 row_number = cells_table2[select][0]
                 column_number = cells_table2[select][1]
                 cell_value = sheet.cell(row=row_number, column=column_number).value
                 data = cell_value
-                temp4 = data
-                table2[currentRow][3] = temp4
+                # print(data) # + "(" + str(row_number) + ", " + str(column_number) + ")" + " Select = " + str(select))
+
+                temp4 = ""
+                
+                if data is None:
+                    temp4 = "None"
+                else:
+                    temp4 = data
+
+                table2[currentRow][3] = not_null_input(temp4)
 
                 select = 0
                 count = count + 1
@@ -199,12 +278,15 @@ def read_pdf(pdf_path, excel_path):
                 select = 0
 
             elif count == 5:
+                # print("===========================================================")
                 count = 0
                 select = 0
                 currentRow = currentRow + 1
     
     return [table1, table2, currentRow]
 
+
+#Function to write the extracted values into the excel in the desired format
 def table_2_excel(pdf_path, excel_path, output_path):
 
     [table1, table2, total_rows] = read_pdf(pdf_path, excel_path)
@@ -220,13 +302,13 @@ def table_2_excel(pdf_path, excel_path, output_path):
     if last_filled_row == 0:
         start_point = last_filled_row 
     else:
-        start_point = last_filled_row + 3
+        start_point = last_filled_row + 0
 
-
-    # Setting up workbook
-    write_to_excel("Material No.", 1 + start_point, 2, output_path, output_sheet_name)
-    write_to_excel("NCR-No.", 1 + start_point, 4, output_path, output_sheet_name)
-    # write_to_excel("Design Organization Drawing and issue", 1 + start_point, 6, output_path, output_sheet_name)
+    if start_point == 0: 
+        # Setting up workbook
+        write_to_excel("Material No.", 1 + start_point, 2, output_path, output_sheet_name)
+        write_to_excel("NCR-No.", 1 + start_point, 4, output_path, output_sheet_name)
+        # write_to_excel("Design Organization Drawing and issue", 1 + start_point, 6, output_path, output_sheet_name)
 
     z = 0
     zz = 0
@@ -244,14 +326,14 @@ def table_2_excel(pdf_path, excel_path, output_path):
                 # excel_col = 6    
                 # write_to_excel(table1[z], zz+2 + start_point, excel_col, output_path, output_sheet_name)
 
-
-    write_to_excel("Item No.", 1 + start_point, 1, output_path, output_sheet_name)
-    write_to_excel("Defect Type", 1 + start_point, 6, output_path, output_sheet_name)
-    write_to_excel("Charact. No.", 1 + start_point, 5, output_path, output_sheet_name)
-    write_to_excel("Serial numbers affected", 1 + start_point, 3, output_path, output_sheet_name)
-    write_to_excel("Description of Nonconformance", 1 + start_point, 7, output_path, output_sheet_name)
-    write_to_excel("Measured Value", 1 + start_point, 8, output_path, output_sheet_name)
-    write_to_excel("Deviation", 1 + start_point, 9, output_path, output_sheet_name)
+    if start_point == 0:
+        write_to_excel("Item No.", 1 + start_point, 1, output_path, output_sheet_name)
+        write_to_excel("Defect Type", 1 + start_point, 6, output_path, output_sheet_name)
+        write_to_excel("Charact. No.", 1 + start_point, 5, output_path, output_sheet_name)
+        write_to_excel("Serial numbers affected", 1 + start_point, 3, output_path, output_sheet_name)
+        write_to_excel("Description of Nonconformance", 1 + start_point, 7, output_path, output_sheet_name)
+        write_to_excel("Measured Value", 1 + start_point, 8, output_path, output_sheet_name)
+        write_to_excel("Deviation", 1 + start_point, 9, output_path, output_sheet_name)
 
     y = 0
     x = 0
@@ -289,8 +371,7 @@ def table_2_excel(pdf_path, excel_path, output_path):
                 str_item_no = item_no_list[x]
                 write_to_excel(str_item_no, excel_row + start_point, excel_col, output_path, output_sheet_name)
                 item_no = item_no + 1
-                
-                
+
 
     try:
         os.remove(excel_path)
@@ -298,31 +379,25 @@ def table_2_excel(pdf_path, excel_path, output_path):
         print(f"File '{excel_path}' not found.")
     except PermissionError:
         print(f"Permission denied to delete file '{excel_path}'.")
+                
 
 
+#Function to create excel file for a pdf file input
 def pdf_file_2_excel(pdf_path, excel_path, output_path):
     temp_folder_path = "./path_temp"
     if not os.path.exists(temp_folder_path):
         os.makedirs(temp_folder_path)
-        print(f"Folder '{temp_folder_path}' created.")
-
-
         table_2_excel(pdf_path, excel_path, output_path)
 
 
         os.rmdir(temp_folder_path)
-        print(f"Folder '{temp_folder_path}' deleted.")
     else:
-        print(f"Folder '{folder_path}' already exists.")
         table_2_excel(pdf_path, excel_path, output_path)
 
 
-
+#Function to create excel file for a folder input
 def pdf_folder_2_excel(folder_path, output_path, file_list):
-
-
     temp_folder_path = "./path_temp"
-
     pdf_len = len(file_list)
     i = 0
 
@@ -347,11 +422,11 @@ def pdf_folder_2_excel(folder_path, output_path, file_list):
 
 
 
-folder_path = input("Enter: ")
+folder_path = input("Enter the path of the folder(if your input is a file, hit enter): ")
 
-pdf_path = "NCR-edited.pdf"
+pdf_path = input("Enter the path of the file(if your input is a folder, hit enter): ")   ##If file make sure to change file_or_folder variable to 1
 
-excel_path = "out2.xlsx"
+excel_path = "out4.xlsx"
 
 output_path = "result.xlsx"
 
