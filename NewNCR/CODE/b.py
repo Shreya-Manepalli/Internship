@@ -116,13 +116,17 @@ def read_pdf_page1_table2(workbook):
     j = 2   
     cell_value = ""  
 
-    while cell_value != None:
+    none_count = 0
+
+    while none_count < 4:
         row_number = j
         column_number = 1
         cell_value = sheet.cell(row=row_number, column=column_number).value
         data = not_null_input(cell_value)
         if cell_value != None:
             table2.append(data)
+        else:
+            none_count = none_count + 1
         j = j + 1
     
     return table2
@@ -348,11 +352,11 @@ def perform_all_file_actions(pdf_path, output_path):
 
     print_group_6_7(table6, table7, start, count, output_path, sheet_name)
 
-    os.remove(excel_path)
+    # os.remove(excel_path)
 
 
 
-pdf_path = "./NCR1.pdf"
+pdf_path = "./NCR-Dummy3.pdf"
 output_path = "./final.xlsx"
 folder_path = "C:\Ashutosh\Random\pdf2excel3"
 file_or_folder = 1
