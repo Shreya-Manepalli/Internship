@@ -352,7 +352,7 @@ def perform_all_file_actions(pdf_path, output_path):
 
     print_group_6_7(table6, table7, start, count, output_path, sheet_name)
 
-    # os.remove(excel_path)
+    os.remove(excel_path)
 
 
 
