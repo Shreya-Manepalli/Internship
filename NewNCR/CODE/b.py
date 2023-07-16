@@ -285,9 +285,34 @@ def print_group_6_7(table6, table7, start_point, count, output_path, sheet_name)
             write_to_excel(input_str, start, 9, output_path, sheet_name)
             start = start + 1
 
-def get_dev_and_mes(table3):
-    table6 = table3
-    table7 = table3
+def get_dev_and_mes(sentences):
+
+    # Regular expression pattern to extract the measured value and deviation value
+    pattern = r"is\s+(.*?)\s+or\s+(\d+\.?\d*)"
+
+    measured_values = []
+    deviation_values = []
+
+    for sentence in sentences:
+        if sentence.startswith("Casting Blend"):
+            measured_value = ""
+            deviation_value = ""
+        else:
+            # Search for the pattern in the sentence
+            match = re.search(pattern, sentence)
+
+            if match:
+                measured_value = match.group(1)
+                deviation_value = match.group(2)
+            else:
+                measured_value = ""
+                deviation_value = ""
+
+        measured_values.append(measured_value)
+        deviation_values.append(deviation_value)
+
+    table6 = measured_values
+    table7 = deviation_values
 
     return table6, table7
 
@@ -330,7 +355,7 @@ def perform_all_file_actions(pdf_path, output_path):
 pdf_path = "./NCR1.pdf"
 output_path = "./final.xlsx"
 folder_path = "C:\Ashutosh\Random\pdf2excel3"
-file_or_folder = 2
+file_or_folder = 1
 
 if file_or_folder == 1:
     perform_all_file_actions(pdf_path, output_path)
