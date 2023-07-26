@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 
 
@@ -397,7 +398,7 @@ def print_group_6_7(table6, table7, start_point, count, output_path, sheet_name)
 
 #Function to extract the measured and deviation values
 def get_dev_and_mes(sentences):
-    pattern = r"is\s+([\s\S]*?)\s+or\s+(\d+\.?\d*)"
+    pattern = r"is\s+([\s\S]*?)\s+or\s+(\d+\.?\,?\d*)"
 
     measured_values = []
     deviation_values = []

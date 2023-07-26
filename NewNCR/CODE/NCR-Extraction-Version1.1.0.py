@@ -477,7 +477,7 @@ def perform_all_file_actions(pdf_path, output_path):
 folder_path = input("Enter the folder path(Hit enter if input is a file path): ") ##Press enter if input is a file
 pdf_path = input("Enter the file path(Hit enter if input is a folder path): ")  ##Press enter if input is a folder
 output_path = "final.xlsx"
-file_or_folder = 2 ##Enter 1 for file input or 2 for folder input
+file_or_folder = 1 ##Enter 1 for file input or 2 for folder input
 
 if file_or_folder == 1:
     perform_all_file_actions(pdf_path, output_path)
