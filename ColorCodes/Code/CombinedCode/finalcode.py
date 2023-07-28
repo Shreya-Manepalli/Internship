@@ -137,26 +137,6 @@ def crop_image_into_chunks(image_path):
 # input_folder = input("Enter the path of the parent input folder (which contains the pdf files): ") #Takes the main parent folder as the input
 # output_folder = input("Enter the path of the intermediate output folder (chunks and images will be stored): ")  #Intermediate output folder which stores all the Images of the pdf files
 
-#Function to convert pdf files to images is being called here
-# convert_pdf_to_images(input_folder, output_folder)
-
-
-# def remove_chunk():
-#     #This takes the folder containing the images as the input
-#     #input_folder1 = output_folder
-
-#     for root, dirs, files in os.walk(output_folder):
-#         for file in files:
-#             if file.endswith('.jpg'):
-#                 input_path = os.path.join(root, file)
-
-#                 cropped_chunks = crop_image_into_chunks(input_path)
-#                 for i, chunk in enumerate(cropped_chunks):
-#                     chunk.save(os.path.join(root, f'chunk_{i+1}.jpg'))
-
-#                 os.remove(input_path)  #Removes the images after chunking is done
-
-
 ######################################################  CODE TO GENERATE EXCEL FILES  ###############################################################
 
 
@@ -196,7 +176,7 @@ def process_subfolder(input_subfolder_path, output_subfolder_path):
 
     color_number_dict = {}
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         image_paths = [os.path.join(input_subfolder_path, file) for file in files if file.endswith(('.jpg', '.png', '.jpeg', '.tiff'))]
         results = executor.map(process_image, image_paths)
 
@@ -238,7 +218,3 @@ def process_folder(input_folder, output_folder):
     #Removes the Intermediate folder containing all the chunks and the images
     shutil.rmtree(input_folder)
     return True
-
-#Fuction being called 
-# process_folder(output_folder, output_folder_path)
-

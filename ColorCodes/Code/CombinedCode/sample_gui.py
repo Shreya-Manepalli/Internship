@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
-import finalcodee as fc
+import finalcode as fc
 import threading
 from tkinter import messagebox
 from tqdm import tqdm
